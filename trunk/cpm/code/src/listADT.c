@@ -6,7 +6,7 @@
 
 struct listCDT
 {
-	elementT head;
+	activityADT head;
 	listADT tail;
 };
 
@@ -17,62 +17,65 @@ NewList(void)
 }
 
 static int
-Compare(elementT elem1, elementT elem2)
+CompareAct(activityADT act1, activityADT act2)
 {
-	return strcmp(elem1->info->ID, elem2->info->ID);	
+	return strcmp(act1->info->ID, act2->info->ID);	
+}
+
+static int
+CompareStr(char * ID, activityADT act)
+{
+	return strcmp(ID, act->info->ID);	
 }
 
 /*
- * Funcion que inserta recursivamente el elemento en la lista.
+ * Funcion que inserta recursivamente la actividad en la lista.
  * En caso de error, retorna -1.
 */
 static int
-InsertWrapped(listADT * list, elementT element)
+InsertWrapped(listADT * list, activityADT act)
 {
 	int aux;
 	listADT auxList = NULL;
-	if(!ListIsEmpty(*list) && (aux = Compare(element, ListHead(*list))) > 0)
-		return InsertWrapped(&(*list)->tail, element);
-	if(ListIsEmpty(*list) || aux > 0)
+	if(!ListIsEmpty(*list) && (aux = CompareAct(act, ListHead(*list))) > 0)
+		return InsertWrapped(&(*list)->tail, act);
+	if(ListIsEmpty(*list) || aux < 0)
 	{
-		if(!ListIsEmpty(*list))
-			auxList = ListTail(*list);
+		auxList = *list;
 		if((*list = malloc(sizeof(struct listCDT))) == NULL)
 			return -1;
-		(*list)->head = element;
+		(*list)->head = act;
 		(*list)->tail = auxList;
 		return 1;
 	}
-	return 0;	/*El elemento ya existia en la lista.*/
+	return 0;	/*La actividad ya existia en la lista.*/
 }
 
 int
-Insert(listADT * list, elementT element)
+Insert(listADT * list, activityADT act)
 {
 	int aux;
-	if((aux = InsertWrapped(list, element)) == -1)
+	if((aux = InsertWrapped(list, act)) == -1)
 	{
 		FreeList(list);
-		Error("No hay memoria suficiente como para enlistar algun elemento mas.\n");
+		Error("No hay memoria suficiente como para enlistar ningun elemento mas.\n");
 	}
 	return aux;
 }
 
 int 
-Delete(listADT * list, elementT element)
+Delete(listADT * list, char * ID)
 {
 	int aux = 1;
 	listADT auxList;
-	if(!ListIsEmpty(*list) && (aux = Compare(element, ListHead(*list))) < 0)
-	{
-		auxList = ListTail(*list);
-		return Delete(&auxList, element);
-	}
+	if(!ListIsEmpty(*list) && (aux = CompareStr(ID, ListHead(*list))) > 0)
+		return Delete(&(*list)->tail, ID);
 	if(!aux)
 	{
-		auxList = ListTail(*list);
-		free(*list);
-		*list = auxList;
+		auxList = *list;
+		*list = ListTail(*list);
+		free(auxList);
+		return 1;
 	}	
 	return 0;		/*El elemento no existia.*/		
 }
@@ -83,15 +86,18 @@ ListIsEmpty(listADT list)
 	return (list == NULL);
 }
 
-int 
-ElementBelongs(listADT list, elementT element)
+activityADT 
+ElementBelongs(listADT list, char * ID)
 {
-	if(Compare(element,ListHead(list)) < 0)
-		return ElementBelongs(ListTail(list), element);
-	return (Compare(element,ListHead(list)) == 0);
+	int aux;
+	if((aux = CompareStr(ID,ListHead(list))) > 0)
+		return ElementBelongs(ListTail(list), ID);
+	if(!aux)
+		return ListHead(list);
+	return NULL;
 }
 
-elementT 
+activityADT 
 ListHead(listADT list)
 {
 	return list->head;
