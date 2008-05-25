@@ -1,6 +1,14 @@
 #ifndef GRAPHADT_H_
 #define GRAPHADT_H_
 
+typedef struct					/*Definida para uso interno.*/
+{
+	char * descrip;
+	int duracion;
+	char * ID;
+	char ** precedentes;
+}actInfo;
+
 /*Tipos de datos.*/
 typedef struct graphCDT * graphADT;				/*Grafo.*/
 typedef struct activityCDT * activityADT;		/*Actividades.*/
@@ -116,7 +124,7 @@ activityADT GetActivity(graphADT g, char * ID);
  * Precondicion:				Grafo previamente creado. ID no nulo.
  * Postcondicion:				-
  */
-int ElementBelongs(graphADT g, char * ID);
+int ElementBelongsToGraph(graphADT g, char * ID);
 
 /* Funcion:						IsSource
  * Uso:							if(IsSource(g, stg))
@@ -158,7 +166,7 @@ stageADT GetSource(graphADT g);
  * Precondicion:				Grafo previamente creado.
  * Postcondicion:				-
  */
-stageADT GetDrain(graphADT g, stageADT stg);
+stageADT GetDrain(graphADT g);
 
 /* Funcion:						SetActivityOrig
  * Uso:							SetActivityOrig(g, "A", stg);
@@ -178,6 +186,9 @@ int SetActivityOrig(graphADT g, char * ID, stageADT stg);
  * Descripcion:					Setea el destino de la actividad que se corresponde
  * 								con el ID recibido. En caso de que la misma no	
  * 								exista, esta retorna 0, caso contrario, 1.
+ * 								Si ya tenia un origen seteado, esta lo borra de los
+ * 								que comiencen en esa etapa, y genera el nuevo origen
+ * 								en la que corresponda.
  * ----------------------------------------------------------------------------------
  * Precondicion:				Grafo previamente creado. ID no nulo. Etapa valida.	
  * Postcondicion:				-
@@ -190,6 +201,9 @@ int SetActivityDest(graphADT g, char * ID, stageADT stg);
  * Descripcion:					Obtiene la etapa que precede a la actividad que se
  * 								corresponde el ID. En caso de que no exista,
  * 								retorna NULL.
+ * 								Si ya tenia un destino seteado, esta lo borra de los  
+ * 								que finalicen en esa etapa, y genera el nuevo destino
+ * 								en la que corresponda.
  * ----------------------------------------------------------------------------------
  * Precondicion:				Grafo previamente creado. ID no nulo.
  * Postcondicion:				-

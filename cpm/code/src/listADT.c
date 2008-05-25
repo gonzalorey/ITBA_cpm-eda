@@ -1,8 +1,18 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
-#include"../libs/listADT.h"
 #include"../libs/defensiva.h"
+#include"../libs/listADT.h"
+#include"../libs/graphADT.h"
+
+struct activityCDT				/*Definida internamente.*/
+{
+	actInfo * info;
+	stageADT dest;
+	stageADT orig;
+	int li, lt,ci, ct;
+	activityADT next;
+};
 
 struct listCDT
 {
@@ -19,13 +29,13 @@ NewList(void)
 static int
 CompareAct(activityADT act1, activityADT act2)
 {
-	return strcmp(act1->info->ID, act2->info->ID);	
+	return strcmp(act1->info->ID, act2->info->ID);
 }
 
 static int
 CompareStr(char * ID, activityADT act)
 {
-	return strcmp(ID, act->info->ID);	
+	return strcmp(ID, act->info->ID);
 }
 
 /*

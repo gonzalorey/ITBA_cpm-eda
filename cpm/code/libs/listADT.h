@@ -5,7 +5,7 @@
 #ifndef LISTADT_H_
 #define LISTADT_H_
 
-#include "hashADT.h"			/*Como necesitaba definir el tipo de elemento, inclui esa lib.*/
+#include "../libs/graphADT.h"
 
 typedef struct listCDT * listADT;	
 

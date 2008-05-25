@@ -1,15 +1,9 @@
 #include<stdio.h>
 #include<stdlib.h>
+#include<string.h>
+#include"../libs/defensiva.h"
 #include"../libs/graphADT.h"
 #include"../libs/listADT.h"
-
-typedef struct					/*Definida para uso interno.*/
-{
-	char * descrip;
-	int duracion;
-	char * ID;
-	char ** precedentes;
-}actInfo;
 
 struct graphCDT
 {
@@ -17,7 +11,7 @@ struct graphCDT
 	stageADT drain;				/*Sumidero.*/
 	activityADT activities;		/*Aristas.*/
 	int stageNum;				/*Cantidad de nodos del grafo.*/
-} 
+}; 
 
 struct activityCDT				/*Aristas del grafo.*/
 {
@@ -48,7 +42,7 @@ NewGraph(void)
 		free(rta);
 		Error("No hay memoria suficiente como para crear el grafo.\n");
 	}
-	if((rta->source = calloc(1, sizeof(struct stageCDT))) == NULL)
+	if((rta->drain = calloc(1, sizeof(struct stageCDT))) == NULL)
 	{
 		free(rta->source);
 		free(rta);
@@ -69,8 +63,8 @@ FreeStages(stageADT stg)
 	if(stg)
 	{
 		FreeStages(stg->next);
-		FreeList(stg->start);
-		FreeList(stg->finish);
+		FreeList(&stg->start);
+		FreeList(&stg->finish);
 		free(stg);	
 	}
 }
@@ -110,6 +104,8 @@ InsertStage(graphADT g)
 	g->drain->before = stg;
 	stg->start = NewList();
 	stg->finish = NewList();
+	stg->next = g->drain;
+	stg->before = aux;
 	g->stageNum++;
 	return stg;
 }
@@ -117,7 +113,7 @@ InsertStage(graphADT g)
 static int
 Compare(actInfo * info1, actInfo * info2)
 {
-	return strcmp(ïnfo1->ID, info2->ID);	
+	return strcmp(info1->ID, info2->ID);	
 }
 
 static activityADT
@@ -191,9 +187,9 @@ static activityADT
 GetActivityWrapped(activityADT act, char * ID)
 {
 	int cmp;
-	if(*act && (cmp = strcmp(act->info->ID, ID)) < 0)
+	if(act && (cmp = strcmp(act->info->ID, ID)) < 0)
 		return GetActivityWrapped(act->next, ID);
-	else if(*act && !cmp)
+	else if(act && !cmp)
 		return act;
 	else
 		return NULL;		/*Si es mayor o si act == NULL, el elemento no esta.*/
@@ -206,7 +202,7 @@ GetActivity(graphADT g, char * ID)
 }
 
 int 
-ElementBelongs(graphADT g, char * ID)
+ElementBelongsToGraph(graphADT g, char * ID)
 {
 	return (GetActivity(g, ID) != NULL);
 }
@@ -232,7 +228,7 @@ GetSource(graphADT g)
 stageADT
 GetDrain(graphADT g)
 {
-	return g->drain;	
+	return g->drain;
 }
 
 int
@@ -241,6 +237,8 @@ SetActivityOrig(graphADT g, char * ID, stageADT stg)
 	activityADT aux;
 	if((aux = GetActivity(g, ID)) == NULL)
 		return 0;
+	if(aux->orig)							/*Si ya tenia un origen, la borro del mismo.*/
+		Delete(&aux->orig->start, ID);
 	aux->orig = stg;
 	Insert(&stg->start, aux);
 	return 1;
@@ -252,7 +250,9 @@ SetActivityDest(graphADT g, char * ID, stageADT stg)
 	activityADT aux;
 	if((aux = GetActivity(g, ID)) == NULL)
 		return 0;
-	aux->Dest = stg;
+	if(aux->dest)							/*Si ya tenia un destino, la borro del mismo.*/
+		Delete(&aux->dest->finish, ID);
+	aux->dest = stg;
 	Insert(&stg->finish, aux);
 	return 1;
 }
@@ -275,31 +275,49 @@ GetActivityDest(graphADT g, char * ID)
 	return aux->dest;
 }
 
-int
-DeleteStage(graphADT g, stageADT stg)
+/*
+ * Borra los origenes de todas las actividades dentro de la lista.
+ */
+static void
+DeleteActivitiesOrig(listADT list)
 {
-	if(IsSource(stg) || IsDrain(stg))
-		return 0;						/*Ni la fuente ni el sumidero pueden ser borrados.*/
-	stg->before->next = stg->next;
-	stg->next->before = stg->before;
-	FreeList(stg->start);
-	FreeList(stg->finish);
-	free(stg);
-	return 1;
+	activityADT act;
+	if(!ListIsEmpty(list))
+	{
+		act = ListHead(list);
+		act->orig = NULL;
+		DeleteActivitiesOrig(ListTail(list));
+	}	
 }
 
 /*
- * Borra a la actividad de cada lista dentro de cada etapa.
+ * Borra los destinos de todas las actividades dentro de la lista.
  */
 static void
-DeleteActivityWrapped(stageADT stg, char * ID)
+DeleteActivitiesDest(listADT list)
 {
-	if(stg)
+	activityADT act;
+	if(!ListIsEmpty(list))
 	{
-		DeleteActivityWrapped(stg->next, ID);
-		Delete(&stg->start, act);
-		Delete(&stg->finish, act);
-	}
+		act = ListHead(list);
+		act->dest = NULL;
+		DeleteActivitiesDest(ListTail(list));
+	}	
+}
+
+int
+DeleteStage(graphADT g, stageADT stg)
+{
+	if(IsSource(g, stg) || IsDrain(g, stg))
+		return 0;					/*Ni la fuente ni el sumidero pueden ser borrados.*/
+	stg->before->next = stg->next;
+	stg->next->before = stg->before;
+	DeleteActivitiesOrig(stg->start);
+	DeleteActivitiesDest(stg->finish);
+	FreeList(&stg->start);
+	FreeList(&stg->finish);
+	free(stg);
+	return 1;
 }
 
 int
@@ -308,7 +326,10 @@ DeleteActivity(graphADT g, char * ID)
 	activityADT act, aux;
 	if((act = GetActivity(g, ID)) == NULL)
 		return 0;
-	DeleteActivityWrapped(g->source, ID);
+	if(act->orig)					/*La borro en las etapas.*/
+		Delete(&act->orig->finish, ID);	
+	if(act->dest)
+		Delete(&act->dest->start, ID);
 	aux = act;
 	act = act->next;
 	free(aux);
