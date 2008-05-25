@@ -15,7 +15,7 @@ typedef struct hashCDT * hashADT;
  * ----------------------------------------------------------------------
  * Precondicion:			-
  * Postcondicion:			Tabla creada.
-*/
+ */
 hashADT NewHashTable(void);
 
 /* Funcion:					FreeHashTable
@@ -26,7 +26,7 @@ hashADT NewHashTable(void);
  * ----------------------------------------------------------------------
  * Precondicion:			Tabla previamente creada.
  * Postcondicion:			-
-*/
+ */
 void FreeHashTable(hashADT hashTable);
 
 /* Funcion:					InsertInTable
@@ -40,7 +40,7 @@ void FreeHashTable(hashADT hashTable);
  * ----------------------------------------------------------------------
  * Precondicion:			Tabla previamente creada. Actividad valida.
  * Postcondicion:			Actividad insertada en la tabla.
-*/
+ */
 int InsertInTable(hashADT hashTable, activityADT act);
 
 /* Funcion:					DeleteFromTable
@@ -53,7 +53,7 @@ int InsertInTable(hashADT hashTable, activityADT act);
  * ----------------------------------------------------------------------
  * Precondicion:			Tabla previamente creada. String no nulo.
  * Postcondicion:			Actividad borrada de la tabla.
-*/
+ */
 int DeleteFromTable(hashADT hashTable, char * ID);
 
 /* Funcion:					SearchInTable
@@ -66,7 +66,7 @@ int DeleteFromTable(hashADT hashTable, char * ID);
  * ----------------------------------------------------------------------
  * Precondicion:			Tabla previamente creada. Actividad valida.
  * Postcondicion:			Actividad retornada.
-*/
+ */
 activityADT SearchInTable(hashADT hashTable, char * ID);
 
 #endif /*HASHADT_H_*/

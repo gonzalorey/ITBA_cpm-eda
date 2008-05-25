@@ -14,7 +14,7 @@
  * ----------------------------------------------------------------------
  * Precondicion:			String correcto.
  * Postcondicion:			Fin del programa y mensaje de error.		
-*/
+ */
 void Error(char * msg);
 
 #endif /*DEFENSIVA_H_*/

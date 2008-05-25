@@ -19,7 +19,7 @@ typedef struct listCDT * listADT;
  * ------------------------------------------------------------------------
  * Precondicion:			-
  * Postcondicion:			Lista creada
-*/ 
+ */ 
 listADT NewList(void);
 
 /* Funcion:					Insert
@@ -34,7 +34,7 @@ listADT NewList(void);
  * Precondicion:			Lista valida.
  * Postcondicion:			Lista con la nueva actividad, si no es que
  * 							ya estaba dentro.
-*/
+ */
 int Insert(listADT * list, activityADT act);
 
 /* Funcion:					Delete
@@ -47,7 +47,7 @@ int Insert(listADT * list, activityADT act);
  * ------------------------------------------------------------------------
  * Precondicion:			Lista valida.
  * Postcondicion:			Lista sin la actividad.
-*/
+ */
 int Delete(listADT * list, char * ID);
 
 /* Funcion:					ListIsEmpty
@@ -59,7 +59,7 @@ int Delete(listADT * list, char * ID);
  * ------------------------------------------------------------------------
  * Precondicion:			Lista que sea valida, previamente creada.
  * Postcondicion:			-	
-*/
+ */
 int ListIsEmpty(listADT list);
 
 /* Funcion:					ElementBelongs
@@ -72,7 +72,7 @@ int ListIsEmpty(listADT list);
  * ------------------------------------------------------------------------
  * Precondicion:			Lista valida.
  * Postcondicion:			-
-*/
+ */
 activityADT ElementBelongs(listADT list, char * ID);
 
 /* Funcion:					ListHead
@@ -84,7 +84,7 @@ activityADT ElementBelongs(listADT list, char * ID);
  * ------------------------------------------------------------------------
  * Precondicion:			Lista valida, no vacia.
  * Postcondicion:			-
-*/
+ */
 activityADT ListHead(listADT list);
 
 /* Funcion:					ListTail
@@ -98,7 +98,7 @@ activityADT ListHead(listADT list);
  * ------------------------------------------------------------------------
  * Precondicion:			Lista valida, no vacia.
  * Postcondicion:			-
-*/
+ */
 listADT ListTail(listADT list);
 
 /* Funcion:					FreeList
@@ -109,7 +109,7 @@ listADT ListTail(listADT list);
  * -------------------------------------------------------------------------
  * Precondicion:			Lista valida.
  * Poscondicion:			-
-*/
+ */
 void FreeList(listADT * list);
 
 #endif /*LISTADT_H_*/

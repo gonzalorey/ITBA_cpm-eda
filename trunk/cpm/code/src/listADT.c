@@ -112,11 +112,9 @@ ListTail(listADT list)
 void 
 FreeList(listADT * list)
 {
-	listADT aux;
 	if(*list)
 	{
-		aux = ListTail(*list);
-		FreeList(&aux);
+		FreeList(&(*list)->tail);
 		free(*list);
 	}	
 }
