@@ -18,6 +18,7 @@ struct activityCDT				/*Aristas del grafo.*/
 	actInfo * info;
 	stageADT dest;
 	stageADT orig;
+	int isFictitious;			/*1 si lo es, 0 lo contrario.*/
 	int li, lt,ci, ct;			/*Tiempos de la actividad.*/
 	activityADT next;
 };
@@ -273,6 +274,26 @@ GetActivityDest(graphADT g, char * ID)
 	if((aux = GetActivity(g, ID)) == NULL)
 		return NULL;
 	return aux->dest;
+}
+
+int
+SetFictitious(graphADT g, char * ID)
+{
+	activityADT aux;
+	if((aux = GetActivity(g, ID)) == NULL)
+		return 0;
+	aux->isFictitious = 1;
+	return 1;	
+}
+
+int
+UnsetFictitious(graphADT g, char * ID)
+{
+	activityADT aux;
+	if((aux = GetActivity(g, ID)) == NULL)
+		return 0;
+	aux->isFictitious = 0;
+	return 1;	
 }
 
 /*

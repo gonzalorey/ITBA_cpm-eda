@@ -10,6 +10,7 @@ struct activityCDT				/*Definida internamente.*/
 	actInfo * info;
 	stageADT dest;
 	stageADT orig;
+	int isFictitious;			/*1 si lo es, 0 lo contrario.*/
 	int li, lt,ci, ct;
 	activityADT next;
 };

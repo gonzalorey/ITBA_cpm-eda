@@ -222,6 +222,30 @@ stageADT GetActivityOrig(graphADT g, char * ID);
  */
 stageADT GetActivityDest(graphADT g, char * ID);
 
+/* Funcion:						SetFictitious
+ * Uso:							SetFictitious(g, "D");
+ * ----------------------------------------------------------------------------------
+ * Descripcion:					Setea la actividad que se corresponde con el ID
+ * 								como ficticia. En caso de que la misma no exista,
+ * 								retorna 0, caso contrario, 1.
+ * ----------------------------------------------------------------------------------
+ * Precondicion:				Grafo previamente creado. ID no nula.
+ * Postcondicion:				-
+ */
+int SetFictitious(graphADT g, char * ID);
+
+/* Funcion:						UnsetFictitious
+ * Uso:							UnsetFictitious(g, "D");
+ * ----------------------------------------------------------------------------------
+ * Descripcion:					Setea la actividad que se corresponde con el ID
+ * 								como no ficticia. En caso de que la misma no exista,
+ * 								retorna 0, caso contrario, 1.
+ * ----------------------------------------------------------------------------------
+ * Precondicion:				Grafo previamente creado. ID no nula.
+ * Postcondicion:				-
+ */
+int UnsetFictitious(graphADT g, char * ID);
+
 /* Funcion:						DeleteStage
  * Uso:							DeleteStage(g, stg);
  * ----------------------------------------------------------------------------------
