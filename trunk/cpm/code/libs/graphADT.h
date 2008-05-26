@@ -197,6 +197,40 @@ stageADT GetActivityOrig(graphADT g, char * ID);
  */
 stageADT GetActivityDest(graphADT g, char * ID);
 
+/* Funcion:						GetNextStage
+ * Uso:							stg = GetNextStage(g, GetSource(g));
+ * ----------------------------------------------------------------------------------
+ * Descripcion:					Obtiene el nodo que le sigue al nodo actual en la 
+ * 								lista interna que tiene el grafo.
+ * ----------------------------------------------------------------------------------
+ * Precondicion:				Grafo previamente creado. Etapa valida. 
+ * Postcondicion:				-
+ */
+stageADT GetNextStage(graphADT g, stageADT stg);
+
+/* Funcion:						GetPreviousStage
+ * Uso:							stg = GetPreviousStage(g, stg);
+ * ----------------------------------------------------------------------------------
+ * Descripcion:					Obtiene el nodo que viene antes que el nodo actual 
+ * 								en la lista interna que tiene el grafo.
+ * ----------------------------------------------------------------------------------
+ * Precondicion:				Grafo previamente creado. Etapa valida. 
+ * Postcondicion:				-
+ */
+stageADT GetPreviousStage(graphADT g, stageADT stg);
+
+/* Funcion:						IsFictitious
+ * Uso:							if(IsFictitious(g, "F");
+ * ----------------------------------------------------------------------------------
+ * Descripcion:					Si la actividad que se corresponde con el ID es
+ * 								ficticia, retorna 1, caso contrario, 0.
+ * 								Si la misma no se encuentra en el grafo, retorna 0.
+ * ----------------------------------------------------------------------------------
+ * Precondicion:				Grafo previamente creado. ID no nula.
+ * Postcondicion:				-
+ */
+int IsFictitious(graphADT g, char * ID);
+
 /* Funcion:						SetFictitious
  * Uso:							SetFictitious(g, "D");
  * ----------------------------------------------------------------------------------
