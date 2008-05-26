@@ -30,7 +30,7 @@ struct stageCDT					/*Nodos del grafo.*/
 	listADT finish;				/*Actividades que finalizan en esta etapa.*/
 	listADT start;				/*Actividades que comienzan en esta etapa.*/
 	stageADT next;				/*Nodo siguiente.*/
-	stageADT before;			/*Nodo anterior.*/
+	stageADT previous;			/*Nodo anterior.*/
 };
 
 graphADT 
@@ -51,7 +51,7 @@ NewGraph(void)
 		Error("No hay memoria suficiente como para crear el grafo.\n");
 	}
 	rta->source->next = rta->drain;
-	rta->drain->before = rta->source;
+	rta->drain->previous = rta->source;
 	rta->stageNum = 2;						/*Source y drain ya insertados.*/
 	return rta;
 }
@@ -101,13 +101,13 @@ InsertStage(graphADT g)
 		FreeGraph(g);
 		Error("No hay memoria suficiente como para insertar otra etapa.\n");
 	}
-	aux = g->drain->before;
+	aux = g->drain->previous;
 	aux->next = stg;
-	g->drain->before = stg;
+	g->drain->previous = stg;
 	stg->start = NewList();
 	stg->finish = NewList();
 	stg->next = g->drain;
-	stg->before = aux;
+	stg->previous = aux;
 	g->stageNum++;
 	return stg;
 }
@@ -256,6 +256,27 @@ GetActivityDest(graphADT g, char * ID)
 	return aux->dest;
 }
 
+stageADT
+GetNextStage(graphADT g, stageADT stg)
+{
+	return stg->next;	
+}
+
+stageADT
+GetPreviousStage(graphADT g, stageADT stg)
+{
+	return stg->previous;	
+}
+
+int
+IsFictitious(graphADT g, char * ID)
+{
+	activityADT aux;
+	if((aux = GetActivity(g, ID)) == NULL)
+		return 0;
+	return (aux->isFictitious == 1);
+}
+
 int
 SetFictitious(graphADT g, char * ID)
 {
@@ -323,8 +344,8 @@ DeleteStage(graphADT g, stageADT stg)
 {
 	if(IsSource(g, stg) || IsDrain(g, stg))
 		return 0;					/*Ni la fuente ni el sumidero pueden ser borrados.*/
-	stg->before->next = stg->next;
-	stg->next->before = stg->before;
+	stg->previous->next = stg->next;
+	stg->next->previous = stg->previous;
 	DeleteActivitiesOrig(stg->start);
 	DeleteActivitiesDest(stg->finish);
 	FreeList(&stg->start);
