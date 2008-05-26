@@ -10,7 +10,8 @@ struct graphCDT
 	stageADT source;			/*Fuente.*/
 	stageADT drain;				/*Sumidero.*/
 	activityADT activities;		/*Aristas.*/
-	int stageNum;				/*Cantidad de nodos del grafo.*/
+	int stageNum;				/*Cantidad de nodos (etapas) del grafo.*/
+	int actNum;					/*Cantidad de aristas (actividades) del grafo.*/
 }; 
 
 struct activityCDT				/*Aristas del grafo.*/
@@ -154,43 +155,21 @@ InsertActivity(graphADT g, actInfo * info, stageADT orig, stageADT dest)
 		Insert(&orig->start, act);
 	if(dest)
 		Insert(&dest->finish, act);
+	g->actNum++;
 	return act;
 }
 
 /*
- * Calcula la cantidad de actividades generadas hasta el momento.
+ * Retorna la direccion actividad que se corresponde con tal ID. 
+ * Si no existe, devuelve NULL.
  */
-static int 
-NumberOfActivitiesWrapped(activityADT act)
-{
-	if(!act)
-		return 0;
-	return 1 + NumberOfActivitiesWrapped(act->next);
-}
-
-int 
-NumberOfActivities(graphADT g)
-{
-	return NumberOfActivitiesWrapped(g->activities);
-}
-
-int 
-NumberOfStages(graphADT g)
-{
-	return g->stageNum;
-}
-
-/*
- * Retorna la actividad que se corresponde con tal ID. Si no existe,
- * devuelve NULL.
- */
-static activityADT
-GetActivityWrapped(activityADT act, char * ID)
+static activityADT *
+GetActivityWrapped(activityADT * act, char * ID)
 {
 	int cmp;
-	if(act && (cmp = strcmp(act->info->ID, ID)) < 0)
-		return GetActivityWrapped(act->next, ID);
-	else if(act && !cmp)
+	if(*act && (cmp = strcmp((*act)->info->ID, ID)) < 0)
+		return GetActivityWrapped(&(*act)->next, ID);
+	else if(*act && !cmp)
 		return act;
 	else
 		return NULL;		/*Si es mayor o si act == NULL, el elemento no esta.*/
@@ -199,7 +178,8 @@ GetActivityWrapped(activityADT act, char * ID)
 activityADT
 GetActivity(graphADT g, char * ID)
 {
-	return GetActivityWrapped(g->activities, ID);
+	activityADT * act = GetActivityWrapped(&g->activities, ID);
+	return (*act);
 }
 
 int 
@@ -296,6 +276,18 @@ UnsetFictitious(graphADT g, char * ID)
 	return 1;	
 }
 
+int
+NumberOfStages(graphADT g)
+{
+	return g->stageNum;	
+}
+
+int
+NumberOfActivities(graphADT g)
+{
+	return g->actNum;
+}
+
 /*
  * Borra los origenes de todas las actividades dentro de la lista.
  */
@@ -338,21 +330,23 @@ DeleteStage(graphADT g, stageADT stg)
 	FreeList(&stg->start);
 	FreeList(&stg->finish);
 	free(stg);
+	g->stageNum--;
 	return 1;
 }
 
 int
 DeleteActivity(graphADT g, char * ID)
 {
-	activityADT act, aux;
-	if((act = GetActivity(g, ID)) == NULL)
+	activityADT *act, aux;
+	if((act = GetActivityWrapped(&g->activities, ID)) == NULL)
 		return 0;
-	if(act->orig)					/*La borro en las etapas.*/
-		Delete(&act->orig->finish, ID);	
-	if(act->dest)
-		Delete(&act->dest->start, ID);
-	aux = act;
-	act = act->next;
+	if((*act)->orig)					/*La borro en las etapas.*/
+		Delete(&(*act)->orig->finish, ID);	
+	if((*act)->dest)
+		Delete(&(*act)->dest->start, ID);
+	aux = (*act);
+	*act = (*act)->next;
 	free(aux);
+	g->actNum--;
 	return 1;
 }
