@@ -75,31 +75,6 @@ stageADT InsertStage(graphADT g);
  */
 activityADT InsertActivity(graphADT g, actInfo * info, stageADT orig, stageADT dest);
 
-/* Funcion:						NumberOfActivities
- * Uso:							if(NumberOfActivities(g) > num)
- * 								...
- * ----------------------------------------------------------------------------------
- * Descripcion:					Retorna la candidad de actividades insertadas hasta 
- * 								el momento.
- * ----------------------------------------------------------------------------------
- * Precondicion:				Grafo valido.
- * Postcondicion:				-
- */
-int NumberOfActivities(graphADT g);
-
-/* Funcion:						NumberOfStages
- * Uso:							printf("%d", NumberOfStages(g));
- * ----------------------------------------------------------------------------------
- * Descripcion:					Retorna la cantidad de etapas insertadas hasta el 
- * 								momento. Tener en cuenta que despues de haber
- * 								hecho el New, las etapas source y drain ya estan
- * 								creadas, entonces retornaria 2. 
- * ----------------------------------------------------------------------------------
- * Precondicion:				Grafo previamente creado.
- * Postcondicion:				-
- */
-int NumberOfStages(graphADT g);
-
 /* Funcion:						GetActivity
  * Uso:							activityADT act;
  * 								...
@@ -245,6 +220,30 @@ int SetFictitious(graphADT g, char * ID);
  * Postcondicion:				-
  */
 int UnsetFictitious(graphADT g, char * ID);
+
+/* Funcion:						NumberOfStages
+ * Uso:							printf("%d", NumberOfStages(g));
+ * ----------------------------------------------------------------------------------
+ * Descripcion:					Retorna la cantidad de etapas insertadas hasta el 
+ * 								momento. Tener en cuenta que despues de haber
+ * 								hecho el New, las etapas source y drain ya estan
+ * 								creadas, entonces retornaria 2. 
+ * ----------------------------------------------------------------------------------
+ * Precondicion:				Grafo previamente creado.
+ * Postcondicion:				-
+ */
+int NumberOfStages(graphADT g);
+
+/* Funcion:						NumberOfActivities
+ * Uso:							if(NumberOfActivities(g))
+ * ----------------------------------------------------------------------------------
+ * Descripcion:					Retorna la cantidad de actividades definidas en el 
+ * 								grafo.
+ * ----------------------------------------------------------------------------------
+ * Precondicion:				Grafo previamente definido.
+ * Postcondicion:				-
+ */
+int NumberOfActivities(graphADT g);
 
 /* Funcion:						DeleteStage
  * Uso:							DeleteStage(g, stg);
