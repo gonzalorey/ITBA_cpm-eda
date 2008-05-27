@@ -257,16 +257,29 @@ GetActivityDest(graphADT g, char * ID)
 }
 
 stageADT
-GetNextStage(graphADT g, stageADT stg)
+GetNextStage(stageADT stg)
 {
 	return stg->next;	
 }
 
 stageADT
-GetPreviousStage(graphADT g, stageADT stg)
+GetPreviousStage(stageADT stg)
 {
 	return stg->previous;	
 }
+
+listADT
+GetStageStart(stageADT stg)
+{
+	return stg->start;	
+}
+
+listADT
+GetStageFinish(stageADT stg)
+{
+	return stg->finish;	
+}
+
 
 int
 IsFictitious(graphADT g, char * ID)

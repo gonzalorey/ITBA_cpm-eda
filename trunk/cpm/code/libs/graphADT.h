@@ -1,14 +1,6 @@
 #ifndef GRAPHADT_H_
 #define GRAPHADT_H_
 
-typedef struct					/*Definida para uso interno.*/
-{
-	char * descrip;
-	int duracion;
-	char * ID;
-	char ** precedentes;
-}actInfo;
-
 /*Tipos de datos.*/
 typedef struct graphCDT * graphADT;				/*Grafo.*/
 typedef struct activityCDT * activityADT;		/*Actividades.*/
@@ -198,7 +190,7 @@ stageADT GetActivityOrig(graphADT g, char * ID);
 stageADT GetActivityDest(graphADT g, char * ID);
 
 /* Funcion:						GetNextStage
- * Uso:							stg = GetNextStage(g, GetSource(g));
+ * Uso:							stg = GetNextStage(GetSource(g));
  * ----------------------------------------------------------------------------------
  * Descripcion:					Obtiene el nodo que le sigue al nodo actual en la 
  * 								lista interna que tiene el grafo.
@@ -206,10 +198,10 @@ stageADT GetActivityDest(graphADT g, char * ID);
  * Precondicion:				Grafo previamente creado. Etapa valida. 
  * Postcondicion:				-
  */
-stageADT GetNextStage(graphADT g, stageADT stg);
+stageADT GetNextStage(stageADT stg);
 
 /* Funcion:						GetPreviousStage
- * Uso:							stg = GetPreviousStage(g, stg);
+ * Uso:							stg = GetPreviousStage(stg);
  * ----------------------------------------------------------------------------------
  * Descripcion:					Obtiene el nodo que viene antes que el nodo actual 
  * 								en la lista interna que tiene el grafo.
@@ -217,7 +209,29 @@ stageADT GetNextStage(graphADT g, stageADT stg);
  * Precondicion:				Grafo previamente creado. Etapa valida. 
  * Postcondicion:				-
  */
-stageADT GetPreviousStage(graphADT g, stageADT stg);
+stageADT GetPreviousStage(stageADT stg);
+
+/* Funcion:						GetStageStart
+ * Uso:							list = GetStageStart(stg);
+ * ----------------------------------------------------------------------------------
+ * Descripcion:					Obtiene la lista de actividades que comienzan en
+ * 								esta etapa.
+ * ----------------------------------------------------------------------------------
+ * Precondicion:				Grafo previamente creado. Etapa valida. 
+ * Postcondicion:				-
+ */
+listADT GetStageStart(stageADT stg);
+
+/* Funcion:						GetStageFinish
+ * Uso:							list = GetStageFinish(stg);
+ * ----------------------------------------------------------------------------------
+ * Descripcion:					Obtiene la lista de actividades que finalizan en
+ * 								esta etapa.
+ * ----------------------------------------------------------------------------------
+ * Precondicion:				Grafo previamente creado. Etapa valida. 
+ * Postcondicion:				-
+ */
+listADT GetStageFinish(stageADT stg);
 
 /* Funcion:						IsFictitious
  * Uso:							if(IsFictitious(g, "F");
