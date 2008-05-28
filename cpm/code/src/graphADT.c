@@ -3,7 +3,7 @@
 #include<string.h>
 #include"../libs/defensiva.h"
 #include"../libs/graphADT.h"
-#include"../libs/listADT.h"
+#include"../libs/listActADT.h"
 
 struct graphCDT
 {
@@ -27,8 +27,8 @@ struct activityCDT				/*Aristas del grafo.*/
 struct stageCDT					/*Nodos del grafo.*/
 {
 	int tag;
-	listADT finish;				/*Actividades que finalizan en esta etapa.*/
-	listADT start;				/*Actividades que comienzan en esta etapa.*/
+	listActADT finish;				/*Actividades que finalizan en esta etapa.*/
+	listActADT start;				/*Actividades que comienzan en esta etapa.*/
 	stageADT next;				/*Nodo siguiente.*/
 	stageADT previous;			/*Nodo anterior.*/
 };
@@ -65,8 +65,8 @@ FreeStages(stageADT stg)
 	if(stg)
 	{
 		FreeStages(stg->next);
-		FreeList(&stg->start);
-		FreeList(&stg->finish);
+		FreeActList(&stg->start);
+		FreeActList(&stg->finish);
 		free(stg);	
 	}
 }
@@ -104,8 +104,8 @@ InsertStage(graphADT g)
 	aux = g->drain->previous;
 	aux->next = stg;
 	g->drain->previous = stg;
-	stg->start = NewList();
-	stg->finish = NewList();
+	stg->start = NewActList();
+	stg->finish = NewActList();
 	stg->next = g->drain;
 	stg->previous = aux;
 	g->stageNum++;
@@ -152,9 +152,9 @@ InsertActivity(graphADT g, actInfo * info, stageADT orig, stageADT dest)
 	act->orig = orig;
 	act->dest = dest;
 	if(orig)
-		Insert(&orig->start, act);
+		InsertAct(&orig->start, act);
 	if(dest)
-		Insert(&dest->finish, act);
+		InsertAct(&dest->finish, act);
 	g->actNum++;
 	return act;
 }
@@ -221,7 +221,7 @@ SetActivityOrig(graphADT g, char * ID, stageADT stg)
 	if(aux->orig)							/*Si ya tenia un origen, la borro del mismo.*/
 		Delete(&aux->orig->start, ID);
 	aux->orig = stg;
-	Insert(&stg->start, aux);
+	InsertAct(&stg->start, aux);
 	return 1;
 }
 
@@ -234,7 +234,7 @@ SetActivityDest(graphADT g, char * ID, stageADT stg)
 	if(aux->dest)							/*Si ya tenia un destino, la borro del mismo.*/
 		Delete(&aux->dest->finish, ID);
 	aux->dest = stg;
-	Insert(&stg->finish, aux);
+	InsertAct(&stg->finish, aux);
 	return 1;
 }
 
@@ -268,13 +268,13 @@ GetPreviousStage(stageADT stg)
 	return stg->previous;	
 }
 
-listADT
+listActADT
 GetStageStart(stageADT stg)
 {
 	return stg->start;	
 }
 
-listADT
+listActADT
 GetStageFinish(stageADT stg)
 {
 	return stg->finish;	
@@ -326,14 +326,14 @@ NumberOfActivities(graphADT g)
  * Borra los origenes de todas las actividades dentro de la lista.
  */
 static void
-DeleteActivitiesOrig(listADT list)
+DeleteActivitiesOrig(listActADT list)
 {
 	activityADT act;
-	if(!ListIsEmpty(list))
+	if(!ListActIsEmpty(list))
 	{
-		act = ListHead(list);
+		act = ListActHead(list);
 		act->orig = NULL;
-		DeleteActivitiesOrig(ListTail(list));
+		DeleteActivitiesOrig(ListActTail(list));
 	}	
 }
 
@@ -341,14 +341,14 @@ DeleteActivitiesOrig(listADT list)
  * Borra los destinos de todas las actividades dentro de la lista.
  */
 static void
-DeleteActivitiesDest(listADT list)
+DeleteActivitiesDest(listActADT list)
 {
 	activityADT act;
-	if(!ListIsEmpty(list))
+	if(!ListActIsEmpty(list))
 	{
-		act = ListHead(list);
+		act = ListActHead(list);
 		act->dest = NULL;
-		DeleteActivitiesDest(ListTail(list));
+		DeleteActivitiesDest(ListActTail(list));
 	}	
 }
 
@@ -361,8 +361,8 @@ DeleteStage(graphADT g, stageADT stg)
 	stg->next->previous = stg->previous;
 	DeleteActivitiesOrig(stg->start);
 	DeleteActivitiesDest(stg->finish);
-	FreeList(&stg->start);
-	FreeList(&stg->finish);
+	FreeActList(&stg->start);
+	FreeActList(&stg->finish);
 	free(stg);
 	g->stageNum--;
 	return 1;

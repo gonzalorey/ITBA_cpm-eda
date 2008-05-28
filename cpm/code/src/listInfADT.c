@@ -12,18 +12,18 @@ struct actInfo
 	char ** preced;
 };
 
-struct listCDT
+struct listInfCDT
 {
 	tElement element;
-	listADT next;
+	listInfADT next;
 };
 
-listADT newList (void)
+listInfADT newInfList (void)
 {
 	return NULL;
 }
 
-int listIsEmpty (listADT list)
+int listInfIsEmpty (listInfADT list)
 {
 	return list == NULL;
 }
@@ -37,23 +37,23 @@ static void Error (char * message)
 /* Ya que esta lista no inserta los elementos ordenados bajo ningun parametro, los voy poniendo al final ya que tengo que recorrer la lista
  * para chequear que no se inserte ningun elemento repetido
  */
-int insert (listADT* list, tElement element)
+int insertInf (listInfADT* list, tElement element)
 {
-	listADT new, ant, rec;
+	listInfADT new, ant, rec;
 
 	rec = ant = *list;
 
-	while (!listIsEmpty(rec) && strcmp (rec->element->ID, element->ID))
+	while (!listInfIsEmpty(rec) && strcmp (rec->element->ID, element->ID))
 	{
 		ant = rec;
-		rec = listTail (rec);
+		rec = listInfTail (rec);
 	}
 
-	if (!listIsEmpty(rec) && !strcmp(rec->element->ID, element->ID))	/* Elemento repetido */
+	if (!listInfIsEmpty(rec) && !strcmp(rec->element->ID, element->ID))	/* Elemento repetido */
 		return 0;
 
 	/* llegue al final, si estoy en este punto el elemento no estaba en la lista */
-	if ((new = malloc (sizeof(struct listCDT))) == NULL)
+	if ((new = malloc (sizeof(struct listInfCDT))) == NULL)
 		Error ("No hay memoria disponible\n");
 
 	new->element = element;
@@ -67,55 +67,55 @@ int insert (listADT* list, tElement element)
 	return 1;
 }
 
-char* getID (listADT list)
+char* getIndID (listInfADT list)
 {
-	if (listIsEmpty(list))
+	if (listInfIsEmpty(list))
 		Error ("Lista vacia\n");
 
 	return list->element->ID;
 }
 
-char* getDesc (listADT list)
+char* getInfDesc (listInfADT list)
 {
-	if (listIsEmpty(list))
+	if (listInfIsEmpty(list))
 		Error ("Lista vacia\n");
 
 	return list->element->description;
 }
 
-int getDur (listADT list)
+int getInfDur (listInfADT list)
 {
-	if (listIsEmpty(list))
+	if (listInfIsEmpty(list))
 		Error ("Lista vacia\n");
 
 	return list->element->duration;
 }
 
-char ** getPrec (listADT list)
+char ** getInfPrec (listInfADT list)
 {
-	if (listIsEmpty(list))
+	if (listInfIsEmpty(list))
 		Error ("Lista vacia\n");
 
 	return list->element->preced;
 }
 
-listADT listTail (listADT list)
+listInfADT listInfTail (listInfADT list)
 {
-	if (listIsEmpty(list))
+	if (listInfIsEmpty(list))
 		Error ("Lista vacia\n");
 
 	return list->next;
 }
 
-tElement listHead (listADT list)
+tElement listInfHead (listInfADT list)
 {
-	if (listIsEmpty(list))
+	if (listInfIsEmpty(list))
 		Error ("Lista vacia\n");
 
 	return list->element;
 }
 
-static void freeStr (listADT list)
+static void freeStr (listInfADT list)
 {
 	int i;
 
@@ -130,41 +130,40 @@ static void freeStr (listADT list)
 	free (list);
 }
 
-int delete (listADT* list, tElement element)
+int deleteInf (listInfADT* list, tElement element)
 {
-	listADT ant, rec;
+	listInfADT ant, rec;
 
 	ant = rec = *list;
 
-	while (!listIsEmpty(rec) && strcmp (rec->element->ID, element->ID))
+	while (!listInfIsEmpty(rec) && strcmp (rec->element->ID, element->ID))
 	{
 		ant = rec;
-		rec = listTail (rec);
+		rec = listInfTail (rec);
 	}
 
-	if (listIsEmpty(rec))
+	if (listInfIsEmpty(rec))
 		return 0;		/* No está el elemento a eliminar */
 
 	if (ant == rec)			/* Tengo que eliminar el primero */
-		*list = listTail(*list);
+		*list = listInfTail(*list);
 	else
-		ant->next = listTail(rec);
+		ant->next = listInfTail(rec);
 	
 	freeStr (rec);
 	return 1;
 }
 
-void freeList (listADT* list)
+void freeInfList (listInfADT* list)
 {
-	listADT aux;
+	listInfADT aux;
 
-	while (!listIsEmpty(*list))
+	while (!listInfIsEmpty(*list))
 	{
-		aux = listTail(*list);
+		aux = listInfTail(*list);
 		freeStr (*list);
 		*list = aux;
 	}
 
 	*list = NULL;
 }
-

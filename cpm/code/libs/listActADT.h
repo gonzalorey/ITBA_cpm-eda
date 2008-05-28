@@ -2,15 +2,15 @@
  * Lista lineal ordenada sin header y sin repeticiones.
  */
 
-#ifndef LISTADT_H_
-#define LISTADT_H_
+#ifndef listActADT_H_
+#define listActADT_H_
 
 #include "../libs/graphADT.h"
 
-typedef struct listCDT * listADT;	
+typedef struct listActCDT * listActADT;	
 
-/* Funcion:					NewList
- * Uso:						list = NewList();
+/* Funcion:					NewActList
+ * Uso:						list = NewActList();
  * ------------------------------------------------------------------------
  * Descripcion:				Inicializa la lista.
  * 							Usarla una sola vez antes de empezar a 
@@ -20,12 +20,12 @@ typedef struct listCDT * listADT;
  * Precondicion:			-
  * Postcondicion:			Lista creada
  */ 
-listADT NewList(void);
+listActADT NewActList(void);
 
-/* Funcion:					Insert
- * Uso:						Insert(&list, act);
+/* Funcion:					InsertAct
+ * Uso:						InsertAct(&list, act);
  * ------------------------------------------------------------------------
- * Descripcion:				Inserta una actividad en la lista ordenada.
+ * Descripcion:				InsertActa una actividad en la lista ordenada.
  * 							Si la misma ya existia, retorna 0, caso
  * 							contrario, devuelve un 1.
  * 							Si hay problemas en la alocacion de memoria,
@@ -35,10 +35,10 @@ listADT NewList(void);
  * Postcondicion:			Lista con la nueva actividad, si no es que
  * 							ya estaba dentro.
  */
-int Insert(listADT * list, activityADT act);
+int InsertAct(listActADT * list, activityADT act);
 
-/* Funcion:					Delete
- * Uso:						Delete(&list, "A");
+/* Funcion:					DeleteAct
+ * Uso:						DeleteAct(&list, "A");
  * ------------------------------------------------------------------------
  * Descripcion:				Elimina la actividad de la lista ordenada que
  * 							se corresponde con el ID recibido.
@@ -48,10 +48,10 @@ int Insert(listADT * list, activityADT act);
  * Precondicion:			Lista valida.
  * Postcondicion:			Lista sin la actividad.
  */
-int Delete(listADT * list, char * ID);
+int DeleteAct(listActADT * list, char * ID);
 
-/* Funcion:					ListIsEmpty
- * Uso:						if(ListIsEmpty(list))
+/* Funcion:					ListActIsEmpty
+ * Uso:						if(ListActIsEmpty(list))
  * 							...
  * ------------------------------------------------------------------------
  * Descripcion:				Devuelve 1 si la lista esta vacia, y 0 en 
@@ -60,10 +60,10 @@ int Delete(listADT * list, char * ID);
  * Precondicion:			Lista que sea valida, previamente creada.
  * Postcondicion:			-	
  */
-int ListIsEmpty(listADT list);
+int ListActIsEmpty(listActADT list);
 
-/* Funcion:					ElementBelongs
- * Uso:						if((act = ElementBelongs(list, "A")) == NULL)	
+/* Funcion:					ElementActBelongs
+ * Uso:						if((act = ElementActBelongs(list, "A")) == NULL)	
  * 							...
  * ------------------------------------------------------------------------
  * Descripcion:				Si hay una actividad cuyo ID corresponda con 
@@ -73,10 +73,10 @@ int ListIsEmpty(listADT list);
  * Precondicion:			Lista valida.
  * Postcondicion:			-
  */
-activityADT ElementBelongs(listADT list, char * ID);
+activityADT ElementActBelongs(listActADT list, char * ID);
 
-/* Funcion:					ListHead
- * Uso:						if(act < ListHead(list))
+/* Funcion:					ListActHead
+ * Uso:						if(act < ListActHead(list))
  * 							...
  * ------------------------------------------------------------------------
  * Descripcion:				Es de consulta. Devuelve la primera componente
@@ -85,24 +85,24 @@ activityADT ElementBelongs(listADT list, char * ID);
  * Precondicion:			Lista valida, no vacia.
  * Postcondicion:			-
  */
-activityADT ListHead(listADT list);
+activityADT ListActHead(listActADT list);
 
-/* Funcion:					ListTail
- * Uso:						while(act != ListHead(list))
- * 								list = ListTail(list);
+/* Funcion:					ListActTail
+ * Uso:						while(act != ListActHead(list))
+ * 								list = ListActTail(list);
  * ------------------------------------------------------------------------
  * Descripcion:				Es de consulta. Devuelve la sublista que 
  * 							corresponde a la lista original. No altera la
- * 							lista. Se usa conjuntamente con ListHead para
+ * 							lista. Se usa conjuntamente con ListActHead para
  * 							iterar sobre las componentes de la lista.
  * ------------------------------------------------------------------------
  * Precondicion:			Lista valida, no vacia.
  * Postcondicion:			-
  */
-listADT ListTail(listADT list);
+listActADT ListActTail(listActADT list);
 
-/* Funcion:					FreeList
- * Uso:						FreeList(&list);
+/* Funcion:					FreeActList
+ * Uso:						FreeActList(&list);
  * -------------------------------------------------------------------------
  * Descripcion:				Destruye la lista, liberando la memoria alocada
  * 							para la creacion y uso de la misma.
@@ -110,6 +110,6 @@ listADT ListTail(listADT list);
  * Precondicion:			Lista valida.
  * Poscondicion:			-
  */
-void FreeList(listADT * list);
+void FreeActList(listActADT * list);
 
-#endif /*LISTADT_H_*/
+#endif /*listActADT_H_*/

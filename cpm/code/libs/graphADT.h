@@ -220,7 +220,7 @@ stageADT GetPreviousStage(stageADT stg);
  * Precondicion:				Grafo previamente creado. Etapa valida. 
  * Postcondicion:				-
  */
-listADT GetStageStart(stageADT stg);
+listActADT GetStageStart(stageADT stg);
 
 /* Funcion:						GetStageFinish
  * Uso:							list = GetStageFinish(stg);
@@ -231,7 +231,7 @@ listADT GetStageStart(stageADT stg);
  * Precondicion:				Grafo previamente creado. Etapa valida. 
  * Postcondicion:				-
  */
-listADT GetStageFinish(stageADT stg);
+listActADT GetStageFinish(stageADT stg);
 
 /* Funcion:						IsFictitious
  * Uso:							if(IsFictitious(g, "F");
