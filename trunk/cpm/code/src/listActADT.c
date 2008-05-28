@@ -120,6 +120,12 @@ ListActTail(listActADT list)
 	return list->tail;
 }
 
+activityADT 
+ListActHeadID(listActADT list)
+{
+	return list->head->info->ID;	
+}
+
 void 
 FreeActList (listActADT * list)
 {

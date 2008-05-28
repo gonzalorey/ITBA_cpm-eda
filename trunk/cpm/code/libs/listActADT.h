@@ -101,6 +101,18 @@ activityADT ListActHead(listActADT list);
  */
 listActADT ListActTail(listActADT list);
 
+/* Funcion:					ListActHeadID
+ * Uso:						if(!strcmp(ListActHeadID(list), "F"))
+ * 							...
+ * ------------------------------------------------------------------------
+ * Descripcion:				Retorna el ID de la actividad de la lista
+ * 							actual.
+ * ------------------------------------------------------------------------
+ * Precondicion:			Lista valida, no vacia. ID no nulo
+ * Postcondicion:			-
+ */
+activityADT ListActHeadID(listActADT list);
+
 /* Funcion:					FreeActList
  * Uso:						FreeActList(&list);
  * -------------------------------------------------------------------------

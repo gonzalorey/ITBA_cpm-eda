@@ -15,6 +15,7 @@ char* getInfDesc (listInfADT list);
 int getInfDur (listInfADT list);
 char ** getInfPrec (listInfADT list);
 int replaceInf (listInfADT list, tElement element);
+actInfo * getActInfo(listInfoADT list, char * ID);
 
 #endif
 
