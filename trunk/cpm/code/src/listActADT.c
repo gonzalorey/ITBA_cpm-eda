@@ -2,7 +2,7 @@
 #include<stdlib.h>
 #include<string.h>
 #include"../libs/defensiva.h"
-#include"../libs/listADT.h"
+#include"../libs/listActADT.h"
 #include"../libs/graphADT.h"
 
 struct activityCDT				/*Definida internamente.*/
@@ -15,14 +15,14 @@ struct activityCDT				/*Definida internamente.*/
 	activityADT next;
 };
 
-struct listCDT
+struct listActCDT
 {
 	activityADT head;
-	listADT tail;
+	listActADT tail;
 };
 
-listADT 
-NewList(void)
+listActADT 
+NewActList(void)
 {
 	return NULL;
 }
@@ -40,20 +40,20 @@ CompareStr(char * ID, activityADT act)
 }
 
 /*
- * Funcion que inserta recursivamente la actividad en la lista.
+ * Funcion que InsertActa recursivamente la actividad en la lista.
  * En caso de error, retorna -1.
 */
 static int
-InsertWrapped(listADT * list, activityADT act)
+InsertActWrapped(listActADT * list, activityADT act)
 {
 	int aux;
-	listADT auxList = NULL;
-	if(!ListIsEmpty(*list) && (aux = CompareAct(act, ListHead(*list))) > 0)
-		return InsertWrapped(&(*list)->tail, act);
-	if(ListIsEmpty(*list) || aux < 0)
+	listActADT auxList = NULL;
+	if(!ListActIsEmpty(*list) && (aux = CompareAct(act, ListActHead(*list))) > 0)
+		return InsertActWrapped(&(*list)->tail, act);
+	if(ListActIsEmpty(*list) || aux < 0)
 	{
 		auxList = *list;
-		if((*list = malloc(sizeof(struct listCDT))) == NULL)
+		if((*list = malloc(sizeof(struct listActCDT))) == NULL)
 			return -1;
 		(*list)->head = act;
 		(*list)->tail = auxList;
@@ -63,28 +63,28 @@ InsertWrapped(listADT * list, activityADT act)
 }
 
 int
-Insert(listADT * list, activityADT act)
+InsertAct(listActADT * list, activityADT act)
 {
 	int aux;
-	if((aux = InsertWrapped(list, act)) == -1)
+	if((aux = InsertActWrapped(list, act)) == -1)
 	{
-		FreeList(list);
+		FreeActList (list);
 		Error("No hay memoria suficiente como para enlistar ningun elemento mas.\n");
 	}
 	return aux;
 }
 
 int 
-Delete(listADT * list, char * ID)
+DeleteAct(listActADT * list, char * ID)
 {
 	int aux = 1;
-	listADT auxList;
-	if(!ListIsEmpty(*list) && (aux = CompareStr(ID, ListHead(*list))) > 0)
-		return Delete(&(*list)->tail, ID);
+	listActADT auxList;
+	if(!ListActIsEmpty(*list) && (aux = CompareStr(ID, ListActHead(*list))) > 0)
+		return DeleteAct(&(*list)->tail, ID);
 	if(!aux)
 	{
 		auxList = *list;
-		*list = ListTail(*list);
+		*list = ListActTail(*list);
 		free(auxList);
 		return 1;
 	}	
@@ -92,40 +92,40 @@ Delete(listADT * list, char * ID)
 }
 
 int 
-ListIsEmpty(listADT list)
+ListActIsEmpty(listActADT list)
 {
 	return (list == NULL);
 }
 
 activityADT 
-ElementBelongs(listADT list, char * ID)
+ElementActBelongs(listActADT list, char * ID)
 {
 	int aux;
-	if((aux = CompareStr(ID,ListHead(list))) > 0)
-		return ElementBelongs(ListTail(list), ID);
+	if((aux = CompareStr(ID,ListActHead(list))) > 0)
+		return ElementActBelongs(ListActTail(list), ID);
 	if(!aux)
-		return ListHead(list);
+		return ListActHead(list);
 	return NULL;
 }
 
 activityADT 
-ListHead(listADT list)
+ListActHead(listActADT list)
 {
 	return list->head;
 }
 
-listADT 
-ListTail(listADT list)
+listActADT 
+ListActTail(listActADT list)
 {
 	return list->tail;
 }
 
 void 
-FreeList(listADT * list)
+FreeActList (listActADT * list)
 {
 	if(*list)
 	{
-		FreeList(&(*list)->tail);
+		FreeActList (&(*list)->tail);
 		free(*list);
 	}	
 }

@@ -2,8 +2,8 @@
 #include<stdlib.h>
 #include"../libs/graphBuilder.h"
 #include"../libs/graphADT.h"
-/*#include"../libs/listADT.h"				lista con activityADT's*/
-#include"../libs/listADT2.h"			/*lista con actInfo's*/
+#include"../libs/listActADT.h"				/*lista con activityADT's	*/
+#include"../libs/listInfADT.h"				/*lista con actInfo's		*/
 
 typedef struct						/*Definida para uso interno.*/
 {
@@ -17,44 +17,70 @@ graphADT
 BuildPreliminarGraph(listADT list)
 {
 	graphADT g = NewGraph();
-	actInfo * info;
+	actInfo * info, * auxInfo;
 	stageADT stg = NULL;
-	listADT dcp;			/*Lista de precedentes creados que llegan al sumidero. Drain Connected Precendences.*/
-	listADT ndcp;			/*Lista de precedentes creados que no llegan al sumidero. Not Drain Connected Precedences.*/
-	listADT mergeList;
-	listADT auxList = list;
-	activityADT act;
-	while(!listIsEmpty(auxList))
+
+/*Lista de precedentes creados que llegan al sumidero. Drain Connected Precendences.*/
+	listInfADT dcp;	
+
+/*Lista de precedentes creados que no llegan al sumidero. Not Drain Connected Precedences.*/
+	listInfADT ndcp;
+
+/*Lista de precedentes no creados. Non Created Precedences.*/
+	listInfADT ncp;	
+
+	listInfADT mergeList;
+	listInfADT auxList = list;	/*Se recorrera sobre esta lista.*/
+	listInfADT infoList;		/*Se recorrera los ncp con esta lista.*/
+	activityADT act, auxAct;
+
+	while(!listInfIsEmpty(auxList))
 	{ 
-		info = listHead(list);
-		act = InsertActivity(g, info, NULL, GetDrain(g));			/*Creo la actividad y la conecto al sumidero.*/
-			
-		SetPrecedencesLists(&dcp, &ndcp, info->precedencies);		/*Armo las listas.*/
-		if(!listIsEmpty(ndcp))
+		info = listInfHead(list);
+		act = InsertActivity(g, info, NULL, GetDrain(g));			/*Creo la actividad y la
+											conecto al sumidero.*/
+		if(strcmp(info->precedencies[0], "Fuente"))				
+		{						/*Si las precedencias no son la fuente
+								genero una nueva etapa y la conecto a ella.*/
+			stg = InsertStage(g);
+			SetActivityOrig(g, info->ID, stg);
+		}
+		SetPrecedencesLists(&ncp, &dcp, &ndcp, info->precedencies);		/*Armo las listas.*/
+		if(!listInfIsEmpty(ncp))
+		{
+			stg = InsertStage(g);
+			while(!listInfIsEmpty(ncp))
+			{
+				auxInfo = listInfHead(ncp);
+				auxAct = InsertActivity(g, auxInfo, NULL, stg);
+				ncp = listInfTail(ncp);
+			}
+		}
+		if(!listInfIsEmpty(ndcp))
 		{
 			if(stg == NULL)
 			{
-				stg = InsertStage(g);
-				SetActivityOrig(g, info->ID, stg);					/*Setea al nodo nuevo como origen de la actividad.*/
+				stg = InsertStage(g);			/*Setea al nodo nuevo*/
+				SetActivityOrig(g, info->ID, stg);	/*como origen de la actividad.*/	
 			}
 			mergeList = MergeLists(ndcp, info->precedencies);
-			MagicMagic(g, auxList);									/*No se que nombre ponerle.*/
+			CreateFictitious(g, mergeList);
 		}
-		if(!listIsEmpty(dcp))
+		if(!listInfIsEmpty(dcp))
 		{
 			if(stg == NULL)
-				stg = InsertStage(g);
-			ConnectPrecActDrain(dcp, stg);				/*Sus precedencias que terminaban en el sumidero, ahora apuntan a la nueva act.*/
+				stg = InsertStage(g);	/*Sus precedencias que terminaban en el sumidero*/
+			ConnectPrecActDrain(dcp, stg);	/*ahora apuntan a la nueva act.*/	
 		}
-		if(stg == NULL && IsSourcePrec(info->precedencies))		/*Si la fuente esta como precedencia, la conecto con ella.*/
-			SetActivityOrig(g, info->ID, GetSource(g));
+		if(stg == NULL && IsSourcePrec(info->precedencies))	/*Si la fuente esta como*/
+			SetActivityOrig(g, info->ID, GetSource(g));	/*precedencia, la conecto con ella.*/
 		stg = NULL;
-		auxList = listTail(list);
+		auxList = listInfTail(list);
 	}
 }
 
 
-MagicMagic(graphADT g)
+CreateFictitious(graphADT g, listInfADT list)
 {
 	
 }
@@ -70,4 +96,4 @@ Optimize(graphADT g, listADT list)
 		if(CompareLists(info->precedencies, GetStageFinish(GetActivityOrig(g, info->ID))))
 			
 	}
-}
+} 
