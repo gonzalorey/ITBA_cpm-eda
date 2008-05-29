@@ -20,7 +20,6 @@ struct activityCDT				/*Aristas del grafo.*/
 	stageADT dest;
 	stageADT orig;
 	int isFictitious;			/*1 si lo es, 0 lo contrario.*/
-	int li, lt,ci, ct;			/*Tiempos de la actividad.*/
 	activityADT next;
 };
 
@@ -134,10 +133,8 @@ InsertActivityWrapped(activityADT * act, actInfo * info)
 		(*act)->info = info;
 		return *act;
 	}
-	else if(*act && cmp < 0)
+	else	/*Si acepta repetidos, para el caso de las ficticias.*/
 		return InsertActivityWrapped(&(*act)->next, info);
-	else
-		return NULL;		/*Esta repedito.*/
 }
 
 activityADT
@@ -280,6 +277,11 @@ GetStageFinish(stageADT stg)
 	return stg->finish;	
 }
 
+char * 
+GetActivityInfo(graphADT g, activityADT act)
+{
+	return act->info;	
+}
 
 int
 IsFictitious(graphADT g, char * ID)
@@ -290,24 +292,16 @@ IsFictitious(graphADT g, char * ID)
 	return (aux->isFictitious == 1);
 }
 
-int
-SetFictitious(graphADT g, char * ID)
+void
+SetFictitious(graphADT g, activityADT act)
 {
-	activityADT aux;
-	if((aux = GetActivity(g, ID)) == NULL)
-		return 0;
-	aux->isFictitious = 1;
-	return 1;	
+	act->isFictitious = 1;
 }
 
 int
-UnsetFictitious(graphADT g, char * ID)
+UnsetFictitious(graphADT g, activityADT act)
 {
-	activityADT aux;
-	if((aux = GetActivity(g, ID)) == NULL)
-		return 0;
-	aux->isFictitious = 0;
-	return 1;	
+	act->isFictitious = 0;
 }
 
 int

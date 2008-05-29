@@ -69,8 +69,8 @@ BuildPreliminarGraph(listADT list)
 		{
 			if(stg == NULL)
 			{
-				stg = InsertStage(g);			/*Setea al nodo nuevo*/
-				SetActivityOrig(g, info->ID, stg);	/*como origen de la actividad.*/	
+				stg = InsertStage(g);					/*Setea al nodo nuevo*/
+				SetActivityOrig(g, info->ID, stg);		/*como origen de la actividad.*/	
 			}
 			mergeList = MergeLists(ndcp, info->precedencies);
 			CreateFictitious(g, mergeList);
@@ -215,7 +215,7 @@ MergeLists(listInfADT list, char ** precedencies)
 void
 CreateFictitious(graphADT g, listInfADT list)
 {
-	
+	/*Tambien recibo una lista con los precedentes que terminan en el origen de la actividad actual???*/
 }
 
 /*
@@ -251,12 +251,37 @@ IsSourcePrec(char ** precedencies)
 graphADT
 Optimize(graphADT g, listInfADT list)
 {
-	listInfADT auxList = list;
 	actInfo * info;
-	while(!listInfIsEmpty(auxList))
+	stageADT stg, stgAux;
+	listActADT listAct, listAux;
+	activityADT act;
+	stg = GetSource(g)			/*No hay actividades que terminen en la fuente.*/
+	do				
 	{
-		info = listInfHead(auxList);
-		if(CompareLists(info->precedencies, GetStageFinish(GetActivityOrig(g, info->ID))))
-			
+		stg = GetNextStage(stg);
+		listAct = GetStageFinish(stg);		/*Obtengo los que finalizan en esta etapa.*/
+		while(!ListActIsEmpty(listAct))
+		{
+			listAux = ListActTail(listAct);
+			while(!ListActIsEmpty(listAux))
+			{
+				if((act = ListActHead(listAux)) == ListActHead(listAct))
+				{
+					/*A las actividades que comienzan en la misma etapa, les genero una ficticia y les cambio el dest.*/
+					stgAux = InsertStage(g);
+					info = GetActivityInfo(g, act);
+					SetActivityOrig(g, info->ID, stgAux);	/*La act se elimina de la lista de act que finalizan en tal nodo
+															y se inserta en otra automanticamente. Por esto mismo, no es 
+															necesario pedir el ListTail.*/
+					act = InsertActivity(g, info, stgAux, stg);	/*Origen el nuevo nodo, destino, el evaluado actualmente.*/
+					SetFictitious(g, act);
+				}
+				else
+					listAux = ListActTail(listAux);
+			}
+			listAct = ListActTail(listAct);
+		}
 	}
+	while(!IsDrain(g, stg));		/*Mientras que no sea el sumidero, me fijo los que finalizan en el.*/
+	return g;
 } 
