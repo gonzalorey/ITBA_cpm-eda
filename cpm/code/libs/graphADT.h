@@ -233,6 +233,18 @@ listActADT GetStageStart(stageADT stg);
  */
 listActADT GetStageFinish(stageADT stg);
 
+/* Funcion:						GetActivityID
+ * Uso:							actInf * info;
+ * 								...
+ * 								info = GetActivityInfo(g, act);
+ * ----------------------------------------------------------------------------------
+ * Descripcion:					Retorna la info correspondiente a tal actividad.
+ * ----------------------------------------------------------------------------------
+ * Precondicion:				Grafo previamente creado. Actividad valida. 
+ * Postcondicion:				-
+ */
+char * GetActivityInfo(graphADT g, activityADT act);
+
 /* Funcion:						IsFictitious
  * Uso:							if(IsFictitious(g, "F");
  * ----------------------------------------------------------------------------------
@@ -248,26 +260,22 @@ int IsFictitious(graphADT g, char * ID);
 /* Funcion:						SetFictitious
  * Uso:							SetFictitious(g, "D");
  * ----------------------------------------------------------------------------------
- * Descripcion:					Setea la actividad que se corresponde con el ID
- * 								como ficticia. En caso de que la misma no exista,
- * 								retorna 0, caso contrario, 1.
+ * Descripcion:					Setea la actividad recibida como ficticia. 
  * ----------------------------------------------------------------------------------
- * Precondicion:				Grafo previamente creado. ID no nula.
+ * Precondicion:				Grafo previamente creado. Actividad valida.
  * Postcondicion:				-
  */
-int SetFictitious(graphADT g, char * ID);
+void SetFictitious(graphADT g, activityADT act);
 
 /* Funcion:						UnsetFictitious
  * Uso:							UnsetFictitious(g, "D");
  * ----------------------------------------------------------------------------------
- * Descripcion:					Setea la actividad que se corresponde con el ID
- * 								como no ficticia. En caso de que la misma no exista,
- * 								retorna 0, caso contrario, 1.
+ * Descripcion:					Setea la actividad recibida como comun (no ficticia).
  * ----------------------------------------------------------------------------------
- * Precondicion:				Grafo previamente creado. ID no nula.
+ * Precondicion:				Grafo previamente creado. Actividad valida.
  * Postcondicion:				-
  */
-int UnsetFictitious(graphADT g, char * ID);
+void UnsetFictitious(graphADT g, activityADT act);
 
 /* Funcion:						NumberOfStages
  * Uso:							printf("%d", NumberOfStages(g));
